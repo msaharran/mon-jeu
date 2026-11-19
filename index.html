@@ -3,41 +3,41 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Obsolescence : le jeu du fabricant (multijoueur)</title>
+<title>Mission NovaControl : sauvez le service client</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Sans:wght@400;600&display=swap">
 <style>
-:root{--bg:#e9eef0;--panel:#fff;--ink:#1b1f23;--mute:#59646c;--yel:#f2b705;--ok:#1f8a4c;--bad:#c93c3c;--teal:#0f7f84;--mid:#b7791f}
-@media (prefers-color-scheme:dark){:root{--bg:#14171a;--panel:#1e2327;--ink:#eceff1;--mute:#9aa6af;--ok:#4cc27f;--bad:#ef6b6b;--teal:#4fc3c8;--mid:#e3a93b}}
+:root{--bg:#e9eef0;--panel:#fff;--ink:#1b1f23;--mute:#59646c;--yel:#f2b705;--ok:#1f8a4c;--bad:#c93c3c;--teal:#0f7f84}
+@media (prefers-color-scheme:dark){:root{--bg:#14171a;--panel:#1e2327;--ink:#eceff1;--mute:#9aa6af;--ok:#4cc27f;--bad:#ef6b6b;--teal:#4fc3c8}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 clamp(16px,1.6vw,19px)/1.5 "IBM Plex Sans",system-ui,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
-main{max-width:960px;margin:0 auto;padding:16px}
+main{max-width:980px;margin:0 auto;padding:16px}
 h1,h2{font-family:"Archivo Black","Arial Black",Impact,sans-serif;font-weight:400;line-height:1.1;margin:0 0 10px}
 h1{font-size:clamp(28px,5vw,46px)}h2{font-size:clamp(21px,3.2vw,32px)}
 .panel{background:var(--panel);border:2px solid var(--ink);border-radius:6px;padding:18px;box-shadow:6px 6px 0 var(--ink);margin-bottom:16px}
-button,input{font:inherit;color:inherit}
-button{cursor:pointer}
+button,input{font:inherit;color:inherit}button{cursor:pointer}
 button:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
 .go{background:var(--yel);color:#1b1f23;border:2px solid var(--ink);border-radius:6px;padding:11px 22px;font-family:"Archivo Black","Arial Black",sans-serif;box-shadow:4px 4px 0 var(--ink)}
 input{padding:10px;border:2px solid var(--ink);border-radius:6px;background:var(--bg);width:100%;margin:6px 0}
-.lead{color:var(--mute)}
-.gauges{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
-.lab{display:flex;justify-content:space-between;font-size:.8em;font-weight:600}
-.bar{height:16px;border:2px solid var(--ink);border-radius:4px;background:var(--panel);overflow:hidden}
-.bar i{display:block;height:100%;transition:width .6s;background:var(--teal)}.bar i.risk{background:var(--bad)}.bar i.yel{background:var(--yel)}
-.up{color:var(--ok)}.dn{color:var(--bad)}.d{font-size:.75em;min-height:1.2em}
+.lead{color:var(--mute)}.up{color:var(--ok)}.dn{color:var(--bad)}
+.rail{display:flex;list-style:none;padding:0;margin:0 0 16px}
+.rail li{flex:1;text-align:center;font-size:.7em;color:var(--mute);position:relative;padding-top:22px}
+.rail li::before{content:"";position:absolute;top:0;left:50%;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:var(--bg);border:2px solid var(--ink)}
+.rail li::after{content:"";position:absolute;top:6px;left:calc(50% + 9px);right:calc(-50% + 9px);height:2px;background:var(--ink)}
+.rail li:last-child::after{display:none}.rail li.done::before{background:var(--ok)}
+.rail li.now{color:var(--ink);font-weight:600}.rail li.now::before{background:var(--yel)}
 .opts{display:grid;gap:10px;margin:14px 0}
 .opt{display:flex;gap:12px;text-align:left;background:var(--bg);border:2px solid var(--ink);border-radius:6px;padding:12px 14px;align-items:flex-start;width:100%}
 .opt b{flex:none;width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center}
 .opt small{display:block;color:var(--mute);margin-top:4px}
-.opt.sel{outline:4px solid var(--yel)}.opt.win{border-color:var(--ok)}
+.opt.sel{outline:4px solid var(--yel)}.opt.good{border-color:var(--ok);border-width:3px}
+.pct{height:8px;border:1px solid var(--ink);border-radius:4px;margin-top:6px;overflow:hidden}.pct i{display:block;height:100%;background:var(--teal)}
 .take{border-left:8px solid var(--yel);background:var(--bg);padding:10px 14px;border-radius:0 6px 6px 0}
 .code{font-family:"Archivo Black",sans-serif;font-size:clamp(48px,10vw,96px);letter-spacing:.12em}
 .row{display:flex;gap:20px;flex-wrap:wrap;align-items:center}
 .pl{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.pl span{border:2px solid var(--ink);border-radius:20px;padding:2px 12px;background:var(--bg)}
-.vr{display:grid;grid-template-columns:24px 1fr 56px;gap:10px;align-items:center;margin:6px 0;font-weight:600}
-.lb{padding:0;list-style:none}.lb li{display:flex;justify-content:space-between;border-bottom:1px solid var(--mute);padding:6px 0}
-@media (max-width:620px){.gauges{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+.lb{padding:0;list-style:none}.lb li{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--mute);padding:6px 0}
+.chain{font-weight:600;color:var(--teal)}
+@media (max-width:620px){.rail li{font-size:.58em}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
@@ -47,93 +47,103 @@ input{padding:10px;border:2px solid var(--ink);border-radius:6px;background:var(
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getDatabase,ref,set,update,onValue,get} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-/* ====== À REMPLIR : configuration Firebase (voir le guide) ====== */
 const firebaseConfig={apiKey:"AIzaSyBm0m11SjOslvPUs73n_siTCyVK_8zEg38",authDomain:"prigi-494d2.firebaseapp.com",databaseURL:"https://prigi-494d2-default-rtdb.europe-west1.firebasedatabase.app",projectId:"prigi-494d2",storageBucket:"prigi-494d2.firebasestorage.app",messagingSenderId:"1066943798750",appId:"1:1066943798750:web:5f16746604df2da4eb114f"};
-/* ================================================================ */
 
-/* [option, risque, demande, trésorerie, explication] */
+/* e: étape · r: rôle · t: titre · c: contexte · i: informations · q: question · o: options · g: bonne réponse · w: explications · k: à retenir · s: source */
 const E=[
-["Le fondeur arrête votre processeur","Le composant principal de votre automate est annoncé en fin de vie.",[["Ignorer : il reste du stock",20,0,5,"Le stock ne couvrira pas la durée annoncée."],["Refaire toute la carte tout de suite",-15,0,-20,"Sûr, mais très coûteux."],["Qualifier une deuxième source",-10,5,-10,"Moins de dépendance à un seul fournisseur."]],"Un seul fournisseur, c’est un seul point de rupture."],
-["Un gros client exige 10 ans de disponibilité","Une grande usine veut un engagement écrit.",[["Refuser",0,-15,0,"Pas de risque, mais un client majeur perdu."],["Accepter sans condition",15,15,-10,"Client ravi, vous portez tout le risque."],["Accepter avec stock dédié et prix révisable",0,10,5,"L’engagement est financé."]],"Un engagement de disponibilité doit être financé, pas seulement promis."],
-["Un concurrent sort un automate plus performant","Moins cher et plus moderne : vos clients hésitent.",[["Baisser vos prix",0,10,-15,"Ventes gardées, marge rognée."],["Accélérer un successeur compatible",-5,10,-15,"Vous innovez sans casser l’existant."],["Ne rien faire",0,-15,5,"Les clients partent peu à peu."]],"On concilie innovation et stabilité par la compatibilité."],
-["Nouvelle exigence de cybersécurité","Une réglementation impose des mises à jour de sécurité.",[["Ne pas toucher à l’ancien firmware",15,-10,5,"Le parc installé devient un risque."],["Mettre à jour l’ancien et préparer la suite",-10,10,-15,"Coûteux, mais le parc reste utilisable."],["Retirer la gamme du marché",-20,-20,0,"Le risque disparaît, les ventes aussi."]],"L’obsolescence est aussi logicielle et réglementaire."],
-["Pénurie mondiale de composants","Les délais explosent chez tous vos fournisseurs.",[["Constituer un stock de sécurité",-10,10,-15,"Livraisons tenues, argent immobilisé."],["Rester en flux tendu",15,-10,10,"Économique, fragile en crise."],["Concevoir des modules interchangeables",-5,5,-10,"La conception modulaire facilite les remplacements."]],"Stocker coûte de l’argent, ne pas stocker coûte de la fiabilité."],
-["Le successeur est prêt","Vos clients ont des milliers de lignes de programme.",[["Rupture totale, tout à réécrire",-10,-20,5,"Ils regardent chez vos concurrents."],["Outil de migration et modules compatibles",-5,15,-10,"Migrer devient un petit projet."],["Aucune nouveauté",10,-5,10,"Compatible, mais peu attractif."]],"Le plus gros coût d’une migration est le logiciel et les essais."],
-["Des clients veulent des pièces après l’arrêt","Leur parc a 15 ans, la gamme n’est plus vendue.",[["Refuser",0,-15,5,"Vous vous coupez du parc installé."],["Réparation et reconditionnement payants",-5,10,10,"Un service rentable."],["Support gratuit et illimité",0,10,-25,"Générosité intenable."]],"La fin de vente n’est pas la fin du service."],
-["Les actionnaires veulent réduire le support","Le SAV des anciens produits pèse sur les comptes.",[["Tout fermer d’un coup",5,-20,15,"Gain rapide, confiance détruite."],["Support dégressif, planifié et annoncé",0,5,5,"Les clients savent à quoi s’attendre."],["Tout maintenir sans limite",0,10,-15,"Rassurant, mais les comptes dérivent."]],"La prévisibilité est ce que les clients demandent le plus."]
+{e:"Approvisionnement et conception",r:"responsables des achats et de l’ingénierie",t:"Un composant va disparaître !",
+c:"Votre fournisseur annonce l’arrêt prochain de la fabrication d’un composant électronique essentiel à votre automate. Vous devez continuer à assurer les réparations pendant plusieurs années.",
+i:["Le fournisseur accepte une dernière commande, mais la quantité disponible ne suffira pas pour couvrir toute la période de maintenance.","Ce stock sera toutefois suffisant pendant la validation d’une solution de remplacement.","Un composant alternatif a été identifié, mais il n’est pas encore validé."],
+q:"Que décidez-vous ?",
+o:["Acheter toutes les pièces restantes et conserver la conception actuelle.","Remplacer immédiatement l’ancien composant par le nouveau, afin de sécuriser l’approvisionnement.","Acheter un stock de transition tout en lançant les tests de validation d’un composant alternatif."],g:2,
+w:["Insuffisant. L’achat final de composants est une véritable stratégie industrielle, mais le stock disponible ne couvrira pas toute la durée de maintenance.","Risqué. Un composant alternatif doit être testé et validé avant son intégration dans un automate existant. Une disponibilité commerciale ne garantit pas sa compatibilité.","Adapté. Le stock de transition permet de poursuivre les réparations pendant que l’équipe technique prépare et valide une solution durable."],
+k:"Anticiper l’obsolescence, c’est sécuriser l’approvisionnement avant la disparition du composant.",
+s:"Fondement scientifique : Shen & Willems (2014), Modeling sourcing strategies to mitigate part obsolescence."},
+{e:"Gestion du cycle de vie du produit",r:"responsables de la gamme de produits",t:"Votre automate arrive en fin de commercialisation !",
+c:"Quelques années plus tard, NovaControl dispose d’une nouvelle génération d’automates. L’ancienne gamme va progressivement être retirée du marché. Cependant, de nombreux clients utilisent toujours ces automates et doivent pouvoir les faire réparer.",
+i:["Une partie du stock est déjà réservée à leur maintenance."],
+q:"Que décidez-vous ?",
+o:["Continuer à commercialiser l’ancien modèle tant que des composants sont disponibles, y compris ceux réservés au service après-vente.","Annoncer un calendrier de retrait, proposer la nouvelle gamme et maintenir les services prévus pour les équipements déjà installés.","Arrêter immédiatement les ventes et demander aux clients de remplacer leurs automates, afin de concentrer toutes les ressources sur la nouvelle gamme."],g:1,
+w:["Risque pour le service client. Utiliser les pièces réservées aux réparations pour de nouvelles ventes compromet la capacité de maintenance prévue.","Adapté. Le calendrier de retrait informe les clients, la nouvelle gamme constitue une alternative et le service des équipements installés reste organisé.","Insuffisant. La commercialisation peut s’arrêter sans que les besoins de maintenance disparaissent. Le remplacement immédiat de tous les équipements ne peut pas être supposé possible."],
+k:"La fin de commercialisation ne signifie pas nécessairement la fin du service après-vente.",
+s:"Exemple réel : Politique de cycle de vie Modicon de Schneider Electric (2022) et retrait de la gamme Quantum annoncé en 2021."},
+{e:"Migration et accompagnement technique",r:"responsables de l’ingénierie et du support technique",t:"Un client souhaite moderniser son installation !",
+c:"Un client utilise encore votre ancien automate. Il souhaite moderniser son système de contrôle, mais ne peut pas remplacer toute son installation en une seule intervention.",
+i:["Il doit conserver temporairement ses modules d’entrées/sorties, qui assurent la liaison avec les capteurs et les machines.","Votre entreprise dispose d’une interface de communication compatible et validée pour cette architecture."],
+q:"Quelle solution proposez-vous ?",
+o:["Organiser une migration progressive : remplacer le contrôleur principal en conservant temporairement les modules compatibles grâce à l’interface prévue.","Remplacer uniquement le contrôleur principal, sans modifier ni adapter les communications avec les anciens modules.","Proposer une modernisation complète, en remplaçant simultanément le contrôleur, les modules et les communications."],g:0,
+w:["Adapté. L’interface validée permet de remplacer le contrôleur principal tout en conservant temporairement les modules compatibles, conformément aux contraintes du client.","Non validé. Le nouveau contrôleur ne peut pas être supposé directement compatible avec l’ancienne architecture sans adaptation des communications.","Techniquement possible, mais inadapté ici. Une migration complète est une véritable solution industrielle, mais elle ne respecte pas la nécessité de conserver provisoirement une partie de l’installation."],
+k:"Prévoir des solutions de migration permet aux clients de moderniser progressivement leurs installations.",
+s:"Exemple réel : Schneider Electric, migration Modicon Quantum vers Modicon M580 avec conservation possible de certaines architectures existantes."},
+{e:"Service après-vente",r:"responsables du service client",t:"Un automate obsolète tombe en panne !",
+c:"Plusieurs années après la fin de commercialisation, un client signale une panne sur un ancien automate. Le service technique confirme que :",
+i:["La ligne de fabrication de cet ancien modèle n’est plus opérationnelle.","Le composant nécessaire à la réparation de l’unité défectueuse n’est plus disponible.","Une unité de remplacement compatible, vérifiée et prête à être expédiée est disponible dans votre stock.","Le client accepte un échange avec retour de son équipement défectueux."],
+q:"Que proposez-vous ?",
+o:["Réparer l’automate original afin de conserver exactement le même équipement.","Fabriquer une nouvelle unité de l’ancien modèle pour remplacer celle qui est défectueuse.","Proposer l’échange avec l’unité compatible disponible et contrôlée."],g:2,
+w:["Impossible dans cette situation. La réparation est une solution réelle, mais le composant nécessaire n’est plus disponible.","Impossible dans cette situation. La ligne de fabrication de l’ancien produit n’est plus opérationnelle.","Adapté. L’unité d’échange est disponible, sa compatibilité a été vérifiée et le client accepte cette modalité de remplacement."],
+k:"Même lorsque la fabrication a cessé, le service peut être maintenu grâce à des solutions d’échange, de réparation ou de remplacement, selon les moyens disponibles.",
+s:"Exemple réel : Schneider Electric, Modicon Life Cycle Management Policy (2022), section « Service Phase »."}
 ];
-const GA=[["r","Risque d’obsolescence","risk"],["d","Demande des clients",""],["c","Trésorerie",""]];
-const $=id=>document.getElementById(id), app=$("app");
-const cl=v=>Math.max(0,Math.min(100,v));
-const q=o=>o[2]+o[3]-o[1];
-/* points d'une option dans une question : 2 meilleure, 1 moyenne, 0 pire */
-const pts=(n,k)=>{const s=E[n][2].map(q),m=s[k];return s.filter(x=>x>m).length===0?2:s.filter(x=>x<m).length===0?0:1};
-const LAB=["À éviter","Acceptable, mais risqué","Le bon réflexe"];
-let db,code,uid,isHost=false,S={};
+const CONC="L’obsolescence ne peut pas toujours être évitée, mais ses conséquences peuvent être anticipées.";
+const CHAIN="Approvisionnement → Conception → Fin de commercialisation → Migration → Service après-vente";
+const END="La gestion de l’obsolescence concerne l’ensemble du cycle de vie de l’automate, et pas uniquement sa fin de vie.";
+const LET=["A","B","C"];
+const $=id=>document.getElementById(id),app=$("app"),arr=o=>o?Object.values(o):[];
+let db,code,uid,S={};
 try{uid=localStorage.getItem("uid")||Math.random().toString(36).slice(2,10);localStorage.setItem("uid",uid)}catch(e){uid=Math.random().toString(36).slice(2,10)}
-
-function gauges(s,dl){return '<div class="gauges">'+GA.map(a=>{const d=dl&&dl[a[0]]?`<span class="${(a[0]==="r"?-dl[a[0]]:dl[a[0]])>0?"up":"dn"}">${dl[a[0]]>0?"+":""}${dl[a[0]]}</span>`:"";
- return `<div><div class="lab"><span>${a[1]}</span><span>${s[a[0]]}</span></div><div class="bar"><i class="${a[2]}" style="width:${s[a[0]]}%"></i></div><div class="d">${d}</div></div>`}).join("")+"</div>"}
-const arr=o=>o?Object.values(o):[];
-function ans(p){const a=p&&p.a||{};return E.map((_,i)=>a[i])}
-function score(p){return ans(p).reduce((t,k,i)=>t+(k==null?0:pts(i,k)),0)}
+const ans=p=>{const a=p&&p.a||{};return E.map((_,i)=>a[i])};
+const score=p=>ans(p).reduce((t,k,i)=>t+(k===E[i].g?1:0),0);
+const rail=n=>'<ol class="rail">'+E.map((x,i)=>`<li class="${i<n?"done":i===n?"now":""}">${x.e}</li>`).join("")+"</ol>";
+function head(n){const e=E[n];return `<div class="lead">Décision ${n+1} sur ${E.length}</div><p><b>Votre rôle : ${e.r}.</b></p><h2>${e.t}</h2><p>${e.c}</p>${e.i.length?"<ul>"+e.i.map(x=>`<li>${x}</li>`).join("")+"</ul>":""}<p><b>${e.q}</b></p>`}
+const nf=c=>`<div class="panel"><h2>Partie introuvable</h2><p class="lead">Aucune partie n’existe avec le code ${c}. Vérifiez le code affiché par l’animateur (si l’animateur recharge sa page, un nouveau code est créé).</p><button class="go" onclick="location.href=location.pathname">Retour</button></div>`;
+const er=(m,e)=>{app.innerHTML=`<div class="panel"><h2>Problème de connexion</h2><p class="lead">${m}</p><p class="take">${e&&(e.code||e.message)||""}</p></div>`};
+function connect(){db=getDatabase(initializeApp(firebaseConfig))}
+const P=p=>ref(db,"sessions/"+code+(p?"/"+p:""));
+const listen=fn=>onValue(P(),sn=>{S=sn.val();if(S)fn()});
 
 function landing(){
  const j=new URLSearchParams(location.search).get("join")||"";
- const ok=!firebaseConfig.databaseURL.startsWith("COLLER");
- app.innerHTML=`<div class="panel"><h1>Le jeu du fabricant d’automates</h1><p class="lead">Gérez la fin de vie d’une gamme d’automates : le groupe vote, la majorité décide.</p>
- ${ok?"":'<p class="take dn">Configuration Firebase manquante : suivez le guide, puis collez vos valeurs dans le fichier.</p>'}
- <h2>Participer</h2><input id="cd" placeholder="Code de la partie" maxlength="4" value="${j.toUpperCase()}" aria-label="Code"><input id="nm" placeholder="Votre prénom" maxlength="20" aria-label="Prénom">
- <button class="go" id="jn">Rejoindre</button>
+ app.innerHTML=`<div class="panel"><h1>Mission : sauvez le service client !</h1><p class="lead">Vous faites partie de NovaControl, entreprise fictive qui fabrique des automates programmables industriels. À chaque étape, le groupe prend une décision pour l’entreprise.</p>
+ <h2>Participer</h2><input id="cd" placeholder="Code de la partie" maxlength="4" value="${j.toUpperCase()}" aria-label="Code"><input id="nm" placeholder="Votre prénom" maxlength="20" aria-label="Prénom"><button class="go" id="jn">Rejoindre</button>
  <h2 style="margin-top:22px">Animer</h2><button class="go" id="hs">Créer une partie</button></div>`;
- if(!ok){$("jn").disabled=$("hs").disabled=true;return}
  $("jn").onclick=()=>{const c=$("cd").value.trim().toUpperCase(),n=$("nm").value.trim();if(c.length!==4||!n)return;join(c,n)};
  $("hs").onclick=host}
-const nf=c=>`<div class="panel"><h2>Partie introuvable</h2><p class="lead">Aucune partie n’existe avec le code ${c}. Vérifiez le code affiché sur l’écran de l’animateur (attention : si l’animateur recharge sa page, un nouveau code est créé).</p><button class="go" onclick="location.href=location.pathname">Retour</button></div>`;
-const er=(m,e)=>{app.innerHTML=`<div class="panel"><h2>Problème de connexion</h2><p class="lead">${m}</p><p class="take">${e&&(e.code||e.message)||""}</p></div>`};
-function connect(){const a=initializeApp(firebaseConfig);db=getDatabase(a)}
-const P=p=>ref(db,"sessions/"+code+(p?"/"+p:""));
-function listen(fn){onValue(P(),sn=>{S=sn.val();if(S)fn()})}
 
 /* ---------- animateur ---------- */
-function host(){connect();isHost=true;const L="ABCDEFGHJKMNPQRSTUVWXYZ23456789";code=Array.from({length:4},()=>L[Math.floor(Math.random()*L.length)]).join("");
- set(P(),{phase:"lobby",n:0,r:30,d:60,c:60,t:Date.now()}).then(()=>listen(renderHost)).catch(e=>er("Impossible de créer la partie. Vérifiez que les règles de la base sont publiées.",e))}
-function renderHost(){const s=S,n=s.n,e=E[n],pl=s.players||{},np=Object.keys(pl).length;let h="";
+function host(){connect();const L="ABCDEFGHJKMNPQRSTUVWXYZ23456789";code=Array.from({length:4},()=>L[Math.floor(Math.random()*L.length)]).join("");
+ set(P(),{phase:"lobby",n:0,t:Date.now()}).then(()=>listen(renderHost)).catch(e=>er("Impossible de créer la partie. Vérifiez que les règles de la base sont publiées.",e))}
+function renderHost(){const s=S,n=s.n||0,e=E[n],pl=s.players||{},np=Object.keys(pl).length;let h="";
  if(s.phase==="lobby"){const u=location.origin+location.pathname+"?join="+code;
-  h=`<div class="panel"><h2>Rejoignez la partie</h2><div class="row"><div><div>Code :</div><div class="code">${code}</div></div><div id="qr"></div></div>
-  <p class="lead">Scannez le QR code ou ouvrez l’adresse du jeu puis saisissez le code.</p><div class="pl">${arr(pl).map(p=>`<span>${p.name}</span>`).join("")}</div>
-  <button class="go" id="go">Lancer la partie (${np} joueur${np>1?"s":""})</button></div>`;app.innerHTML=h;
+  app.innerHTML=`<div class="panel"><h1>Mission : sauvez le service client !</h1><p>Vous faites partie de <b>NovaControl</b>, une entreprise qui conçoit, fabrique et commercialise des automates programmables industriels (API).</p><p><b>Votre objectif :</b> anticiper l’obsolescence des produits tout au long de leur cycle de vie, sans compromettre les engagements de service envers les clients.</p>
+  <p class="lead">Les situations sont fictives ; les stratégies reposent sur des pratiques documentées par des études scientifiques et des documents techniques de Schneider Electric. Aucune décision interne de Schneider n’est attribuée.</p>
+  <div class="row"><div><div>Code de la partie :</div><div class="code">${code}</div></div><div id="qr"></div></div>
+  <div class="pl">${arr(pl).map(p=>`<span>${p.name}</span>`).join("")}</div><button class="go" id="go">Lancer la mission (${np} joueur${np>1?"s":""})</button></div>`;
   new QRCode($("qr"),{text:u,width:170,height:170});$("go").onclick=()=>update(P(),{phase:"vote",votes:null});return}
- if(s.phase==="vote"){const v=arr(s.votes),cn=[0,1,2].map(k=>v.filter(x=>x===k).length);
-  h=`${gauges(s)}<div class="panel"><div class="lead">Décision ${n+1} sur ${E.length} · code ${code}</div><h2>${e[0]}</h2><p class="lead">${e[1]}</p>
-  <div class="opts">${e[2].map((o,k)=>`<div class="opt"><b>${k+1}</b><span>${o[0]}</span></div>`).join("")}</div>
-  <p><b>${v.length}</b> vote${v.length>1?"s":""} sur ${np} joueur${np>1?"s":""}</p><button class="go" id="cl">Clore le vote</button></div>`;app.innerHTML=h;
-  $("cl").onclick=close;return}
- if(s.phase==="result"){const t=s.tally||[0,0,0],tt=t.reduce((a,b)=>a+b,0)||1,dl={r:s.lr,d:s.ld,c:s.lc};
-  h=`${gauges(s,dl)}<div class="panel"><h2>${e[0]}</h2><div class="opts">${e[2].map((o,k)=>`<div class="opt ${s.win===k?"win sel":""}"><b>${k+1}</b><span>${o[0]} <small>${Math.round(t[k]/tt*100)} % des votes (${t[k]}). ${o[4]}</small></span></div>`).join("")}</div>
-  <p class="take"><b>À retenir :</b> ${e[3]}</p><br><button class="go" id="nx">${n<E.length-1?"Décision suivante":"Voir le bilan"}</button></div>`;app.innerHTML=h;
+ if(s.phase==="vote"){const v=arr(s.votes);
+  app.innerHTML=`${rail(n)}<div class="panel">${head(n)}<div class="opts">${e.o.map((o,k)=>`<div class="opt"><b>${LET[k]}</b><span>${o}</span></div>`).join("")}</div><p><b>${v.length}</b> vote${v.length>1?"s":""} sur ${np} joueur${np>1?"s":""} · code ${code}</p><button class="go" id="cl">Clore le vote</button></div>`;$("cl").onclick=close;return}
+ if(s.phase==="result"){const t=s.tally||[0,0,0],tt=t.reduce((a,b)=>a+b,0)||1;
+  app.innerHTML=`${rail(n)}<div class="panel"><h2>${e.t}</h2><div class="opts">${e.o.map((o,k)=>`<div class="opt ${k===e.g?"good":""} ${s.win===k?"sel":""}"><b>${LET[k]}</b><span>${o}${k===e.g?' <b class="up">· Bonne réponse</b>':""}${s.win===k?" <b>· Choix du groupe</b>":""}<small>${Math.round(t[k]/tt*100)} % des votes (${t[k]}). ${e.w[k]}</small><div class="pct"><i style="width:${Math.round(t[k]/tt*100)}%"></i></div></span></div>`).join("")}</div>
+  <p class="take"><b>À retenir :</b> ${e.k}</p><p class="lead"><i>${e.s}</i></p><button class="go" id="nx">${n<E.length-1?"Décision suivante":"Voir le bilan"}</button></div>`;
   $("nx").onclick=()=>n<E.length-1?update(P(),{n:n+1,phase:"vote",votes:null,win:null}):update(P(),{phase:"end"});return}
- const sc=s.d+s.c+(100-s.r),ti=sc>=210?"Équilibre maîtrisé":sc>=160?"Équilibre fragile":"Équilibre rompu";
- const lb=Object.values(pl).map(p=>({n:p.name,s:score(p)})).sort((a,b)=>b.s-a.s);
- app.innerHTML=`${gauges(s)}<div class="panel"><h2>${ti} · ${sc}/300</h2><h2 style="margin-top:14px">Classement (sur ${E.length*2} points)</h2><ul class="lb">${lb.map(x=>`<li><span>${x.n}</span><b>${x.s}</b></li>`).join("")}</ul></div>`}
-function close(){const v=arr(S.votes),t=[0,1,2].map(k=>v.filter(x=>x===k).length),m=Math.max(...t);
- let w=t.indexOf(m);if(!v.length)w=1;const o=E[S.n][2][w];
- update(P(),{phase:"result",tally:t,win:w,r:cl(S.r+o[1]),d:cl(S.d+o[2]),c:cl(S.c+o[3]),lr:o[1],ld:o[2],lc:o[3]})}
+ const g=arr(s.res).reduce((a,b)=>a+b,0),lb=arr(pl).map(p=>({n:p.name,s:score(p)})).sort((a,b)=>b.s-a.s);
+ app.innerHTML=`<div class="panel"><h2>Bilan de la mission</h2><p class="chain">${g} décision${g>1?"s":""} juste${g>1?"s":""} sur ${E.length} pour NovaControl</p><p><b>${CONC}</b></p><p class="chain">${CHAIN}</p><p>${END}</p></div><div class="panel"><h2>Classement (sur ${E.length})</h2><ul class="lb">${lb.map(x=>`<li><span>${x.n}</span><b>${x.s}</b></li>`).join("")}</ul></div>`}
+function close(){const v=arr(S.votes),t=[0,1,2].map(k=>v.filter(x=>x===k).length),m=Math.max(...t),w=v.length?t.indexOf(m):-1;
+ update(P(),{phase:"result",tally:t,win:w,["res/"+S.n]:w===E[S.n].g?1:0})}
 
 /* ---------- participant ---------- */
 async function join(c,name){code=c;connect();
- try{const sn=await get(ref(db,"sessions/"+c+"/phase"));
-  if(!sn.exists()){app.innerHTML=nf(c);return}
+ try{const sn=await get(ref(db,"sessions/"+c+"/phase"));if(!sn.exists()){app.innerHTML=nf(c);return}
   await set(ref(db,"sessions/"+c+"/players/"+uid+"/name"),name);listen(renderPlayer)}
  catch(e){er("Impossible de rejoindre la partie. Vérifiez la connexion et les règles de la base.",e)}}
-function renderPlayer(){const s=S;if(!s.phase){app.innerHTML=nf(code);return}const n=s.n,e=E[n],me=(s.players||{})[uid]||{},mine=(s.votes||{})[uid];let h="";
- if(s.phase==="lobby")h=`<div class="panel"><h2>Vous êtes dans la partie</h2><p class="lead">Attendez que l’animateur la lance.</p></div>`;
- else if(s.phase==="vote"){h=`<div class="panel"><div class="lead">Décision ${n+1} sur ${E.length}</div><h2>${e[0]}</h2><p class="lead">${e[1]}</p><div class="opts">${e[2].map((o,k)=>`<button class="opt ${mine===k?"sel":""}" data-k="${k}"><b>${k+1}</b><span>${o[0]}</span></button>`).join("")}</div><p class="lead">${mine==null?"Touchez votre choix.":"Vote enregistré, vous pouvez le changer jusqu’à la clôture."}</p></div>`;
-  app.innerHTML=h;document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;set(ref(db,"sessions/"+code+"/votes/"+uid),k);set(ref(db,"sessions/"+code+"/players/"+uid+"/a/"+n),k)});return}
- else if(s.phase==="result"){const a=(me.a||{})[n],ok=a!=null;
-  h=`${gauges(s,{r:s.lr,d:s.ld,c:s.lc})}<div class="panel"><h2>Le groupe a choisi</h2><p><b>${e[2][s.win][0]}</b></p><p class="lead">${e[2][s.win][4]}</p>${ok?`<p class="take">Votre choix : ${e[2][a][0]}<br><b>${LAB[pts(n,a)]}</b></p>`:'<p class="take">Vous n’avez pas voté.</p>'}<p class="lead">${e[3]}</p></div>`}
+function renderPlayer(){const s=S;if(!s.phase){app.innerHTML=nf(code);return}
+ const n=s.n||0,e=E[n],me=(s.players||{})[uid]||{},mine=(s.votes||{})[uid];let h="";
+ if(s.phase==="lobby")h=`<div class="panel"><h2>Vous êtes dans la partie</h2><p class="lead">Attendez que l’animateur lance la mission.</p></div>`;
+ else if(s.phase==="vote"){app.innerHTML=`${rail(n)}<div class="panel">${head(n)}<div class="opts">${e.o.map((o,k)=>`<button class="opt ${mine===k?"sel":""}" data-k="${k}"><b>${LET[k]}</b><span>${o}</span></button>`).join("")}</div><p class="lead">${mine==null?"Touchez votre choix.":"Vote enregistré, vous pouvez le changer jusqu’à la clôture."}</p></div>`;
+  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;set(ref(db,"sessions/"+code+"/votes/"+uid),k);set(ref(db,"sessions/"+code+"/players/"+uid+"/a/"+n),k)});return}
+ else if(s.phase==="result"){const a=(me.a||{})[n],ok=a===e.g;
+  h=`${rail(n)}<div class="panel"><h2>${e.t}</h2><p>Bonne réponse : <b class="up">${LET[e.g]}</b>. ${e.o[e.g]}</p><p>Le groupe a choisi : <b>${s.win>=0?LET[s.win]:"—"}</b></p>${a!=null?`<p class="take">Votre choix : <b>${LET[a]}</b> · <b class="${ok?"up":"dn"}">${ok?"Correct":"Incorrect"}</b><br>${e.w[a]}</p>`:'<p class="take">Vous n’avez pas voté.</p>'}<p><b>À retenir :</b> ${e.k}</p><p class="lead"><i>${e.s}</i></p></div>`}
  else{const a=ans(me),sc=score(me);
-  h=`${gauges(s)}<div class="panel"><h2>Votre fiche : ${sc} / ${E.length*2}</h2><ul class="lb">${E.map((x,i)=>`<li><span>${x[0]}</span><b>${a[i]==null?"—":LAB[pts(i,a[i])]}</b></li>`).join("")}</ul><p class="lead">Faites une capture d’écran pour conserver votre fiche.</p></div>`}
+  h=`<div class="panel"><h2>Votre fiche : ${sc} / ${E.length}</h2><ul class="lb">${E.map((x,i)=>`<li><span>${x.e}</span><b class="${a[i]===x.g?"up":"dn"}">${a[i]==null?"—":a[i]===x.g?"Correct":"Incorrect"}</b></li>`).join("")}</ul><p><b>${CONC}</b></p><p class="chain">${CHAIN}</p><p>${END}</p><p class="lead">Faites une capture d’écran pour conserver votre fiche.</p></div>`}
  app.innerHTML=h}
 
 landing();
