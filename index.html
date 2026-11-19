@@ -45,7 +45,7 @@ input{padding:10px;border:2px solid var(--ink);border-radius:6px;background:var(
 <main id="app"></main>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getDatabase,ref,set,update,onValue} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import {getDatabase,ref,set,update,onValue,get} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 /* ====== À REMPLIR : configuration Firebase (voir le guide) ====== */
 const firebaseConfig={apiKey:"AIzaSyBm0m11SjOslvPUs73n_siTCyVK_8zEg38",authDomain:"prigi-494d2.firebaseapp.com",databaseURL:"https://prigi-494d2-default-rtdb.europe-west1.firebasedatabase.app",projectId:"prigi-494d2",storageBucket:"prigi-494d2.firebasestorage.app",messagingSenderId:"1066943798750",appId:"1:1066943798750:web:5f16746604df2da4eb114f"};
@@ -89,13 +89,15 @@ function landing(){
  if(!ok){$("jn").disabled=$("hs").disabled=true;return}
  $("jn").onclick=()=>{const c=$("cd").value.trim().toUpperCase(),n=$("nm").value.trim();if(c.length!==4||!n)return;join(c,n)};
  $("hs").onclick=host}
+const nf=c=>`<div class="panel"><h2>Partie introuvable</h2><p class="lead">Aucune partie n’existe avec le code ${c}. Vérifiez le code affiché sur l’écran de l’animateur (attention : si l’animateur recharge sa page, un nouveau code est créé).</p><button class="go" onclick="location.href=location.pathname">Retour</button></div>`;
+const er=(m,e)=>{app.innerHTML=`<div class="panel"><h2>Problème de connexion</h2><p class="lead">${m}</p><p class="take">${e&&(e.code||e.message)||""}</p></div>`};
 function connect(){const a=initializeApp(firebaseConfig);db=getDatabase(a)}
 const P=p=>ref(db,"sessions/"+code+(p?"/"+p:""));
 function listen(fn){onValue(P(),sn=>{S=sn.val();if(S)fn()})}
 
 /* ---------- animateur ---------- */
 function host(){connect();isHost=true;const L="ABCDEFGHJKMNPQRSTUVWXYZ23456789";code=Array.from({length:4},()=>L[Math.floor(Math.random()*L.length)]).join("");
- set(P(),{phase:"lobby",n:0,r:30,d:60,c:60,t:Date.now()});listen(renderHost)}
+ set(P(),{phase:"lobby",n:0,r:30,d:60,c:60,t:Date.now()}).then(()=>listen(renderHost)).catch(e=>er("Impossible de créer la partie. Vérifiez que les règles de la base sont publiées.",e))}
 function renderHost(){const s=S,n=s.n,e=E[n],pl=s.players||{},np=Object.keys(pl).length;let h="";
  if(s.phase==="lobby"){const u=location.origin+location.pathname+"?join="+code;
   h=`<div class="panel"><h2>Rejoignez la partie</h2><div class="row"><div><div>Code :</div><div class="code">${code}</div></div><div id="qr"></div></div>
@@ -119,8 +121,12 @@ function close(){const v=arr(S.votes),t=[0,1,2].map(k=>v.filter(x=>x===k).length
  update(P(),{phase:"result",tally:t,win:w,r:cl(S.r+o[1]),d:cl(S.d+o[2]),c:cl(S.c+o[3]),lr:o[1],ld:o[2],lc:o[3]})}
 
 /* ---------- participant ---------- */
-function join(c,name){code=c;connect();set(ref(db,"sessions/"+c+"/players/"+uid+"/name"),name);listen(renderPlayer)}
-function renderPlayer(){const s=S,n=s.n,e=E[n],me=(s.players||{})[uid]||{},mine=(s.votes||{})[uid];let h="";
+async function join(c,name){code=c;connect();
+ try{const sn=await get(ref(db,"sessions/"+c+"/phase"));
+  if(!sn.exists()){app.innerHTML=nf(c);return}
+  await set(ref(db,"sessions/"+c+"/players/"+uid+"/name"),name);listen(renderPlayer)}
+ catch(e){er("Impossible de rejoindre la partie. Vérifiez la connexion et les règles de la base.",e)}}
+function renderPlayer(){const s=S;if(!s.phase){app.innerHTML=nf(code);return}const n=s.n,e=E[n],me=(s.players||{})[uid]||{},mine=(s.votes||{})[uid];let h="";
  if(s.phase==="lobby")h=`<div class="panel"><h2>Vous êtes dans la partie</h2><p class="lead">Attendez que l’animateur la lance.</p></div>`;
  else if(s.phase==="vote"){h=`<div class="panel"><div class="lead">Décision ${n+1} sur ${E.length}</div><h2>${e[0]}</h2><p class="lead">${e[1]}</p><div class="opts">${e[2].map((o,k)=>`<button class="opt ${mine===k?"sel":""}" data-k="${k}"><b>${k+1}</b><span>${o[0]}</span></button>`).join("")}</div><p class="lead">${mine==null?"Touchez votre choix.":"Vote enregistré, vous pouvez le changer jusqu’à la clôture."}</p></div>`;
   app.innerHTML=h;document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;set(ref(db,"sessions/"+code+"/votes/"+uid),k);set(ref(db,"sessions/"+code+"/players/"+uid+"/a/"+n),k)});return}
